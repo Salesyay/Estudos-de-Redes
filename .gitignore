@@ -1,55 +1,21 @@
-# Prerequisites
-*.d
-
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
+# Executáveis compilados
 *.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+*.o
 
-# Debug files
+# Executáveis sem extensão (gcc)
+a.out
+
+# Arquivos de debug
+*.gdb
 *.dSYM/
-*.su
-*.idb
-*.pdb
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+# VS Code
+.vscode/
 
-# debug information files
-*.dwo
+# CLion / JetBrains
+.idea/
+cmake-build-*/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
