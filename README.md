@@ -1,4 +1,4 @@
-# Estudo de Redes
+# Estudo de Redes ## 🐸
 
 Estudos práticos de **Redes de Computadores** e **Network Programming** em C/Linux.
 
@@ -17,3 +17,5 @@ Este repositório reúne exercícios, experimentos e anotações sobre:
 * **The Bits and Bytes of Computer Networking** — Google, Coursera.
 * **Beej's Guide to Network Programming** — Brian "Beej Jorgensen" Hall.
 * **Redes de Computadores: Guia Total** — Lindemberg Barros de Souza, Editora Érica.
+  
+## 🐸
