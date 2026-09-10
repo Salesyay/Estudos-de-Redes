@@ -1,4 +1,4 @@
-# Estudo de Redes ## 🐸
+# Estudo de Redes ## 
 
 Estudos práticos de **Redes de Computadores** e **Network Programming** em C/Linux.
 
