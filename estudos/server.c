@@ -52,4 +52,5 @@ int main(void) {
     new_fd = accept(sockfd, (struct sockaddr *) &their_addr, &addr_size);
 
     //pronto para comunicar...
+    printf("Cliente conectado!\n")
 }
