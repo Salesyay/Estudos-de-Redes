@@ -53,4 +53,37 @@ int main(void) {
 
     //pronto para comunicar...
     printf("Cliente conectado!\n")
+
+    //mostrando o IP do cliente na tela
+    if(their_addr.ss_family == AF_INET) {
+    //se o endereco IP do cliente = IPv4
+    
+        struct sockaddr_in *ipv4 = 
+            (struct sockaddr_in *)&their_addr;
+        //estruturando o sockaddr para IPv4
+        inet_ntop(AF_INET, &ipv4->sin_addr, ip, sizeof ip);
+    }
+    else {
+    //se nao, o ip do cliente eh IPv6
+        
+        struct sockaddr_in6 *ipv6 =
+            (struct sockaddr_in6 *)&their_addr;
+
+        inet_ntop(
+            AF_INET6,
+            &ipv6->sin6_addr,
+            ip,
+            sizeof ip
+        );
+    }
+
+    printf("IP do cliente: %s\n", ip);
+
+    close(new_fd);
+    close(sockfd);
+
+    freeaddrinfo(res);
+
+    return 0;
+    }
 }
