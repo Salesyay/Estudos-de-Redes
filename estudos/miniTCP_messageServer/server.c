@@ -18,29 +18,27 @@ ficar parado esperando um cliente em accept.*/
 
 #define BACKLOG 10
 
-int main(int argc, char *argv[]) {
-    struct sockaddr_storage their_addr;
-    socklen_t addr_size;
+int main(void) {
+    struct sockaddr_storage their_addr; //iformações do endereço conectado
+    socklen_t addr_size; 
     struct addrinfo hints *res;
-    int sockfd;
+    int sockfd; //intenger que recrberá o socket
     char ip[INET6_ADDRSTRLEN]; //armazenando o IP do cliente
+    int rv;
 
-    if(argv <= 2) {
-        fprintf (stderr, "ocorreu um erro, e necessario digitar mais de um argumento
-        \n digite ./server mais a port\n");
-        //uso incorrteo do programa
-        return 1; //ERR0
-
-    }
-
+  
+    //estruturando o hints da rede
     memset(&hints, 0, sizeof hints); //zerando a estrutura de rede
 
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE;
-    //estruturando o hints da rede
+    hints.ai_family = AF_UNSPEC; //IPv4 ou IPv6
+    hints.ai_socktype = SOCK_STREAM; //TCP
+    hints.ai_flags = AI_PASSIVE; //endereço local para servidor
 
-    getaddrinfo (NULL, argc, &hints, &res)
+    //checagem de erro na execução do getaddrinfo()
+    if ((rv = getaddrinfo(NULL, PORT, &hints, &serverinfo)) != 0) {
+    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+    return 1;
+}
 
     sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     //estruturando o socket
