@@ -16,5 +16,5 @@ int main(void) {
               INET_ADDRSTRLEN); // convertendo o endereco IPv4 de binario para texto
 
     printf("O endereco IPv4 eh %s\n", ip4); // mostrando o endereco IPv4 na tela
-
+    //teste acode
     return 0;
