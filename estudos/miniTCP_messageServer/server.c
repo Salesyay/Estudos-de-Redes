@@ -1,13 +1,3 @@
-/*Seu primeiro objetivo
-
-Faça o servidor:
-
-criar um socket TCP;
-escolher uma porta, por exemplo 3490;
-fazer bind;
-chamar listen;
-ficar parado esperando um cliente em accept.*/
-
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -25,6 +15,7 @@ int main(void) {
     int sockfd; //intenger que recrberá o socket
     char ip[INET6_ADDRSTRLEN]; //armazenando o IP do cliente
     int rv;
+    int yes = 1;
 
   
     //estruturando o hints da rede
@@ -40,10 +31,29 @@ int main(void) {
     return 1;
 }
 
-    sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-    //estruturando o socket
+    //percorrendo as opções de endereço retornadas por getaddrinfo()
+    for(p = serverinfo; p != NULL; p = p-> ai_next) {
+      //estruturando socket e verificando erro
+      if ((sockfd = socket(p-> ai_family, p-> ai_socktype, p->ai_protocol)) == -1) {
+        perror("server: socket");
+        continue;
+      }
 
-    bind (sockfd, res-> ai_addr, res-> ai_addrlen);
+
+      //reutilizando socket (caso não de, retorne erro)
+      if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+        perror("setsockopt");
+        exit (1);
+      }
+
+      //associando o socket a um endereço e porta (caso der erro, feche socket)
+      if(bind(sockfd, p-> ai_addr, p-> ai_addrlen) == -1) {
+        close(sockfd);
+        perror("server: bind");
+        continue;
+      }
+      break;
+    }
     
     listen(sockfd, BACKLOG);
 
