@@ -54,8 +54,20 @@ int main(void) {
       }
       break;
     }
+
     
-    listen(sockfd, BACKLOG);
+    freeaddrinfo(serverinfo); //liberando a lista alocada por getaddrinfo()
+
+    if(p == NULL) {
+      //nenhum dos endereços disponiveis pode ser associado ao socket
+      fprintf(stderr,"server: filled to bind\n"); 
+      exit(1);
+    }
+  
+    if(listen(sockfd, BACKLOG) == -1) {
+      perror("server: info");
+      exit(1);
+    }
 
 
 
