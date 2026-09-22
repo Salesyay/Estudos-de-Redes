@@ -56,19 +56,27 @@ int main(void) {
     }
 
     
-    freeaddrinfo(serverinfo); //liberando a lista alocada por getaddrinfo()
+  freeaddrinfo(serverinfo); //liberando a lista alocada por getaddrinfo()
 
-    if(p == NULL) {
-      //nenhum dos endereços disponiveis pode ser associado ao socket
-      fprintf(stderr,"server: filled to bind\n"); 
-      exit(1);
-    }
+  if(p == NULL) {
+    //nenhum dos endereços disponiveis pode ser associado ao socket
+    fprintf(stderr,"server: filled to bind\n"); 
+    exit(1);
+   }
   
-    if(listen(sockfd, BACKLOG) == -1) {
-      perror("server: info");
-      exit(1);
-    }
+  if(listen(sockfd, BACKLOG) == -1) {
+    perror("server: info");
+    exit(1);
+  }
 
+  //encerrando todos os dead process
+  sa.sa_sandler = sigchld_handler; 
+  sigemptyser(&sa.sa_mask);
+  sa.sa_flags = SA_RESTART;
+  if(sigaction(SIGCHLD, &sa, NULL) == -1) {
+    perror("sigaction");
+    exit(1);
+  }
 
-
+  printf("servidor: esperando conexão... \n")
 }
