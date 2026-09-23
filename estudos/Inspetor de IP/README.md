@@ -8,21 +8,23 @@
 
 ## Conceitos estudados
 
--getaddrinfo();
--IPv4;
--IPv6;
--struct addrinfo;
--struct sockaddr;
--Resolução de nomes e endereços;
--Estruturas de endereçamento da API de sockets;
+-getaddrinfo();<br>
+-IPv4;<br>
+-IPv6;<br>
+-struct addrinfo;<br>
+-struct sockaddr;<br>
+-Resolução de nomes e endereços;<br>
+-Estruturas de endereçamento da API de sockets;<br>
 
 ## Compilação
 
- Compilie utilizando o `GCC`:
+ Compilie utilizando o `GCC`:<br>
+ Exemplo:
 ##### gcc showip.c -o showip
 
 ## Execução
- Execute o programa o programa conjuntamente com o endereço ou hostname que desejca consultar, ex:
+ Execute o programa o programa conjuntamente com o endereço ou hostname que desejca consultar <br>
+ Exemplo:
 ##### showip reddit.com
 
  O programa faz a resolução do problema e retorna as informações obtidas.
@@ -31,9 +33,9 @@
  Este projeto tem como objetivo compreender e praticar os fundamentos da programação de redes em C, e entender como o sistema operacional representa, resolve e manipula endereços  de rede.
 
  ## Tecnologias
- -C;
- -POSIX socket;
- -Linux;
+ -C;<br>
+ -POSIX socket;<br>
+ -Linux;<br>
  
 
 
