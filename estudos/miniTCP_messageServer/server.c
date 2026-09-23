@@ -5,20 +5,28 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <errno.h>
+#include <sys/wait.h>
+#include <signal.h>
 
-#define port "8000"
+#define PORT "8000"
 #define BACKLOG 10
 
 void sigchld_handler(int s) {
+  //evita que os processos filhos virem zombie process.
   (void)s;
   int saved_errno = errno;
-  while(waitpid(-1, NULL, WHOHANG) > 0);
-  saved_errno = errno;
+  while(waitpid(-1, NULL, WNOHANG) > 0);
+  errno = saved_errno;
 }
 
 void *get_in_addr(struct sockaddr *sa) {
+  //adaptando a estrutura para IPv4 ou IPv6
   if(sa->sa_family == AF_INET) {
     return &(((struct sockaddr_in*)sa)-> sin_addr);
+  }
+  else {
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
   }
 }
 
@@ -26,11 +34,13 @@ void *get_in_addr(struct sockaddr *sa) {
 int main(void) {
   struct sockaddr_storage their_addr; //iformações do endereço conectado
   socklen_t addr_size; 
-  struct addrinfo hints *res;
+  struct addrinfo hints, *serverinfo, *p;
   int sockfd; //intenger que recrberá o socket
-  char ip[INET6_ADDRSTRLEN]; //armazenando o IP do cliente
+  int new_fd;
+  char s[INET6_ADDRSTRLEN]; //armazenando o IP do cliente
   int rv;
   int yes = 1;
+  struct sigaction sa;
 
   
   //estruturando o hints da rede
@@ -85,8 +95,8 @@ int main(void) {
   }
 
   //encerrando todos os dead process
-  sa.sa_sandler = sigchld_handler; 
-  sigemptyser(&sa.sa_mask);
+  sa.sa_handler = sigchld_handler; 
+  sigemptyset(&sa.sa_mask);
   sa.sa_flags = SA_RESTART;
   if(sigaction(SIGCHLD, &sa, NULL) == -1) {
     perror("sigaction");
@@ -96,25 +106,32 @@ int main(void) {
   printf("servidor: esperando conexão... \n");
 
   while(1) {
-    sin_size = sizeof their_addr;
-    new_fd = accept(sockfd, (struct sockaddr *) &their_addr, &sin_size);
+    //loop que aceita conexões
+    addr_size = sizeof their_addr;
+    new_fd = accept(sockfd, (struct sockaddr *) &their_addr, &addr_size);
     if (new_fd == -1){
+      //checagem de erro
       perror("accept");
       continue;
     }
 
+    //descobrindo o IP dk client 
     inet_ntop(their_addr.ss_family, 
       get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
     printf("servidor foi conectado a %s\n", s);
 
+    //criando processo filho para atender o cliente
     if (!fork()) {
       close(sockfd);
-      if(send(new_fd, "Ola, mundo!" 13,, 0) == -1)
+      //imprimindo "Olá, mundo!" :3
+      if(send(new_fd, "Olá, mundo!", 13, 0) == -1)
         perror("send");
+      //encerrando processo filho
       close(new_fd);
       exit(0);
     }
+    //encerrando processo pai
     close(new_fd);
   }
-  return 0;
+  return 0; //gg
 }
