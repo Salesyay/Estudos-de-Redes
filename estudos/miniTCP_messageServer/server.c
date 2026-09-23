@@ -9,6 +9,20 @@
 #define port "8000"
 #define BACKLOG 10
 
+void sigchld_handler(int s) {
+  (void)s;
+  int saved_errno = errno;
+  while(waitpid(-1, NULL, WHOHANG) > 0);
+  saved_errno = errno;
+}
+
+void *get_in_addr(struct sockaddr *sa) {
+  if(sa->sa_family == AF_INET) {
+    return &(((struct sockaddr_in*)sa)-> sin_addr);
+  }
+}
+
+
 int main(void) {
   struct sockaddr_storage their_addr; //iformações do endereço conectado
   socklen_t addr_size; 
