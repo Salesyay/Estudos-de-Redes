@@ -88,7 +88,6 @@ int main(void) {
     printf("IP do cliente: %s\n", ip);
     // mostra o IP convertido para texto
 
-
     close(new_fd);
     // fecha a conexao com o cliente
 
@@ -97,7 +96,6 @@ int main(void) {
 
     freeaddrinfo(res);
     // libera a memoria usada pelo getaddrinfo
-
 
     return 0;
 }
