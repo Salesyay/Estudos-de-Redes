@@ -29,9 +29,17 @@ int main(int argc, char *argv[])
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
-    getaddrinfo(argv[1], argv[2], &hints, &res);
+  //setting getaddrinfo() ja checando erro na formatação do mesmo
+  if((rv = getaddrinfo(argv[1], PORT,&hints, &serverinfo)) != 0) {
+    fprintf(stderr"getaddrinfo: %s\n", gai_strerror(rv));
+    return 1;
+  }
 
-    sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+  for(p = serverinfo; p != NULL, p -> ai_next) {
+    if(((sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) == -1) {
+      perror(stderr"server: socket")
+    };
+  }
 
     connect(sockfd, res->ai_addr, res->ai_addrlen);
 
@@ -39,6 +47,6 @@ int main(int argc, char *argv[])
 
     close(sockfd);
     freeaddrinfo(res);
-
+*/
     return 0;
 }
