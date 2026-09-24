@@ -38,11 +38,20 @@ int main(int argc, char *argv[])
   for(p = serverinfo; p != NULL, p -> ai_next) {
     if(((sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) == -1) {
       perror(stderr"server: socket")
-    };
+      continue;
+    }
+
+    inet_ntop(p->ai_familly,
+             get_in_addr((struct sockaddr *)p -> ai_addr), s, sizeof s);
+
+    if(connect(sockfd, res->ai_addr, res->ai_addrlen)) {
+      perror("client: connect");
+      close(sockfd);
+    }
+    
+    break; 
   }
-
-    connect(sockfd, res->ai_addr, res->ai_addrlen);
-
+    
     printf("Conectado ao servidor!\n");
 
     close(sockfd);
