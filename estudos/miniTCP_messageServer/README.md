@@ -23,6 +23,7 @@ com IPv4 e IPv6 e cria um processo filho para atender cada conexão.
 - `accept()`
 - `fork()`
 - `send()`
+- `recv()`
 - `SIGCHLD`
 - `waitpid()`
 - IPv4 e IPv6
@@ -34,6 +35,44 @@ com IPv4 e IPv6 e cria um processo filho para atender cada conexão.
 
 ## Compilação
 
+### servidor:
+
+Compile o servidor:
 ```bash
 gcc server.c -o server
+```
+Execute:
+``` bash
+./server
+```
+
+O servidor ficará aguardando conexões na porta "8000".
 gcc client.c -o client
+
+### Cliente:
+Em outro terminal:
+```bash
+gcc client.c -o client
+```
+Execute utilizando o hostname ou endereço IP do servidor:
+```bash
+./client localhost
+```
+Em uma máquina diferente da mesma rede, pode ser utilizado o endereço IP do computador que está executando o servidor:
+```bash
+./client 192.168.1.10
+```
+
+### Exemplo
+#### Servidor
+```bash
+servidor: esperando conexão...
+servidor foi conectado a 127.0.0.1
+```
+
+### Client
+```bash
+client: tentando conectar em 127.0.0.1
+Conectado ao servidor!
+Mensagem do servidor: Olá, mundo!
+```
