@@ -12,6 +12,16 @@
 #define PORT "8000"
 #define MAXDATASIZE 100 //número máximo de bytes que podem ser armazenados no buffer
 
+void *get_in_addr(struct sockaddr *sa) {
+    //adaptando a estrutura para IPv4 ou IPv6
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    }
+    else {
+        return &(((struct sockaddr_in6*)sa)->sin6_addr);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     int sockfd;
@@ -42,7 +52,7 @@ int main(int argc, char *argv[])
 
     //percorrendo todos os resultados de getaddrinfo()
     for (p = serverinfo; p != NULL; p = p->ai_next) {
-         
+
         //criando o socket e verificando erro no mesmo
         if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
             perror("client: socket");
@@ -68,11 +78,23 @@ int main(int argc, char *argv[])
 
     if (conectado) {
         printf("Conectado ao servidor!\n");//gg
+
+        //recebendo a mensagem enviada pelo servidor
+        int numbytes = recv(sockfd, buffer, MAXDATASIZE - 1, 0);
+
+        if (numbytes == -1) {
+            perror("client: recv");
+        }
+        else {
+            buffer[numbytes] = '\0';
+            printf("Mensagem do servidor: %s\n", buffer);
+        }
+
+        close(sockfd); //fechando o socket
     } else {
         printf("Não foi possível conectar ao servidor.\n");
     }
 
-    close(sockfd); //fechando o socket
     freeaddrinfo(serverinfo); //encerrando a lista criada por getaddrinfo()
 
     return 0;
