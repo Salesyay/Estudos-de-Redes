@@ -1,31 +1,23 @@
 # MiniTCP_messageServer
 
- Este projeto é uma copia de com alterações para adapta-lo a Datagram Sockets de: [miniTCPh_.miniTCP_messageServer](https://github.com/Salesyay/Estudos-de-Redes/tree/main/estudos/miniTCP_messageServer)
+  Projeto desenvolvido a partir de [miniTCP_messageServer](https://github.com/Salesyay/Estudos-de-Redes/tree/main/estudos/miniTCP_messageServer), adaptando-o para usar <b>UDP<b> invés de TCP.
 
+``` bash 
+  Projeto base:
+  [miniTCP_messageServer](https://github.com/Salesyay/Estudos-de-Redes/tree/main/estudos/miniTCP_messageServer)
+```
+
+  
 ## Sobre
 
-Este programa implementa um servidor TCP capaz de aceitar conexões
-de clientes utilizando sockets POSIX.
+Este projeto tem como objetivo 
+estabelecer uma comunicação cliente-servidor utiluzando o protocolo <b>UDP<b>.
 
-O servidor utiliza `getaddrinfo()` para obter endereços compatíveis
-com IPv4 e IPv6 e cria um processo filho para atender cada conexão.
+A ideia é usar o [servidor TCP](https://github.com/Salesyay/Estudos-de-Redes/tree/main/estudos/miniTCP_messageServer) como base e realizar alterações necessarias adapta-lo. Tudo isso com intuito estudantil, com foco em entender, na prática as diferenças diferenças entre uma comunicação orientada a conexão (TCP) e uma comunicação sem conexão (TCP).
 
-## Conceitos estudados
+## Principaos alterações
 
-- TCP
-- Socket programming
-- `getaddrinfo()`
-- `socket()`
-- `setsockopt()`
-- `bind()`
-- `listen()`
-- `accept()`
-- `fork()`
-- `send()`
-- `recv()`
-- `SIGCHLD`
-- `waitpid()`
-- IPv4 e IPv6
+Em relação ao sercidor TCP foram feitas alterações em relação a como os dados são enciados e recebidos.
 
 ## Estrutura
 
@@ -45,33 +37,24 @@ Execute:
 ./server
 ```
 
-O servidor ficará aguardando conexões na porta "8000".
-gcc client.c -o client
-
 ### Cliente:
 Em outro terminal:
 ```bash
 gcc client.c -o client
-```
-Execute utilizando o hostname ou endereço IP do servidor:
-```bash
-./client localhost
-```
-Em uma máquina diferente da mesma rede, pode ser utilizado o endereço IP do computador que está executando o servidor:
-```bash
-./client 192.168.1.10
 ```
 
 ### Exemplo
 #### Servidor
 ```bash
 servidor: esperando conexão...
-servidor foi conectado a 127.0.0.1
 ```
 
 ### Client
 ```bash
-client: tentando conectar em 127.0.0.1
+client: tentando conectar
 Conectado ao servidor!
 Mensagem do servidor: Olá, mundo!
 ```
+
+### Observação
+ Este projeto tem finalidade didática, e varia da versão [TCP](https://github.com/Salesyay/Estudos-de-Redes/tree/main/estudos/miniTCP_messageServer) para a comparação prática entre estes tipos de comunicação.
