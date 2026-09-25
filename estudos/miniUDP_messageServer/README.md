@@ -1,6 +1,6 @@
 # MiniTCP_messageServer
 
-  Projeto desenvolvido a partir de [miniTCP_messageServer](https://github.com/Salesyay/Estudos-de-Redes/tree/main/estudos/miniTCP_messageServer), adaptando-o para usar <b>UDP<b> invés de TCP.
+  Projeto desenvolvido a partir de [miniTCP_messageServer](https://github.com/Salesyay/Estudos-de-Redes/tree/main/estudos/miniTCP_messageServer), adaptando-o para usar <b>UDP</b> invés de TCP.
 
 ``` bash 
   Projeto base:
@@ -11,7 +11,7 @@
 ## Sobre
 
 Este projeto tem como objetivo 
-estabelecer uma comunicação cliente-servidor utiluzando o protocolo <b>UDP<b>.
+estabelecer uma comunicação cliente-servidor utiluzando o protocolo <b>UDP</b>.
 
 A ideia é usar o [servidor TCP](https://github.com/Salesyay/Estudos-de-Redes/tree/main/estudos/miniTCP_messageServer) como base e realizar alterações necessarias adapta-lo. Tudo isso com intuito estudantil, com foco em entender, na prática as diferenças diferenças entre uma comunicação orientada a conexão (TCP) e uma comunicação sem conexão (TCP).
 
