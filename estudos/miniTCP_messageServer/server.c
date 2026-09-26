@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <stdlib.h>
 
 #define PORT "8000"
 #define BACKLOG 10
