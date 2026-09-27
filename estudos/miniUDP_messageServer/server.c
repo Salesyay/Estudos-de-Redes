@@ -73,7 +73,16 @@ int main(void) {
     perror("recvfrom");
     exit(1);
   }
+  
   printf("listener: pacote recebido de: %s\n", inet_ntop(their_addr.ss_family,
                                                         get_in_addr((steuct sockaddr*)&their_addr), s. sizeof s));
-  printf("o tamanho do pacote é: %d wm bytes\n", numbytes);
+  printf("o tamanho do pacote é: %d em bytes\n", numbytes);
+
+  buf[numbytes] = '/0';
+
+  printf("O pacote contém: %s\n", buf); /
+
+  close(sockfd); //fechando o socket
+
+  return 0; //gg
   }
