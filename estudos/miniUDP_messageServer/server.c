@@ -56,7 +56,6 @@ int main(void) {
     break;
     }
 
-    
   freeaddrinfo(serverinfo); //liberando a lista alocada por getaddrinfo()
 
   if(p == NULL) {
@@ -66,8 +65,12 @@ int main(void) {
    }
 
   printf("Listrner: esperando recvfrom\n");
-  
-  if(listen(sockfd, BACKLOG) == -1) {
-    perror("server: info");
+
+  addr_len = sizeof their_addr; //tamanho do addr do cliente
+
+  //estruturando o recvfrom e checando erro no mesmo
+  if ((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0,(struct sockaddr *) &their_addr, &addr_len)) == -1) {
+    perror("recvfrom");
     exit(1);
+  }
   }
