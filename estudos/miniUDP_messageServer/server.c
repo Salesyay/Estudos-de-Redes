@@ -13,25 +13,6 @@
 #define PORT "8000"
 #define MAXBUFLEN 100
 
-void sigchld_handler(int s) {
-  //evita que os processos filhos virem zombie process.
-  (void)s;
-  int saved_errno = errno;
-  while(waitpid(-1, NULL, WNOHANG) > 0);
-  errno = saved_errno;
-}
-
-void *get_in_addr(struct sockaddr *sa) {
-  //adaptando a estrutura para IPv4 ou IPv6
-  if(sa->sa_family == AF_INET) {
-    return &(((struct sockaddr_in*)sa)-> sin_addr);
-  }
-  else {
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-  }
-}
-
-
 int main(void) {
   struct sockaddr_storage their_addr; //iformações do endereço conectado
   socklen_t addr_size; 
@@ -90,53 +71,3 @@ int main(void) {
     perror("server: info");
     exit(1);
   }
-
-  //encerrando todos os dead process
-  sa.sa_handler = sigchld_handler; 
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags = SA_RESTART;
-  if(sigaction(SIGCHLD, &sa, NULL) == -1) {
-    perror("sigaction");
-    exit(1);
-  }
-
-  printf("servidor: esperando conexão... \n");
-
-  addr_len = sizeof their_addr;
-  if((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0,
-     (struct sockaddr *)&their_addr, addr_len)) ==-1) {
-    perror("recvfrom");
-    exit(1);
-     }
-  printf()
-
-  while(1) {
-    //loop que aceita conexões
-    addr_size = sizeof their_addr;
-    new_fd = accept(sockfd, (struct sockaddr *) &their_addr, &addr_size);
-    if (new_fd == -1){
-      //checagem de erro
-      perror("accept");
-      continue;
-    }
-
-    //descobrindo o IP dk client 
-    inet_ntop(their_addr.ss_family, 
-      get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
-    printf("servidor foi conectado a %s\n", s);
-
-    //criando processo filho para atender o cliente
-    if (!fork()) {
-      close(sockfd);
-      //imprimindo "Olá, mundo!" :3
-      if(send(new_fd, "Olá, mundo!", 13, 0) == -1)
-        perror("send");
-      //encerrando processo filho
-      close(new_fd);
-      exit(0);
-    }
-    //encerrando processo pai
-    close(new_fd);
-  }
-  return 0; //gg
-}
