@@ -73,4 +73,7 @@ int main(void) {
     perror("recvfrom");
     exit(1);
   }
+  printf("listener: pacote recebido de: %s\n", inet_ntop(their_addr.ss_family,
+                                                        get_in_addr((steuct sockaddr*)&their_addr), s. sizeof s));
+  printf("o tamanho do pacote é: %d wm bytes\n", numbytes);
   }
