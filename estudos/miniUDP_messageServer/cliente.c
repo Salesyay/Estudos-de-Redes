@@ -27,7 +27,10 @@ int main(int argc, char *argv[])
     int sockfd;
     char buffer[MAXDATASIZE]; //buffer de dados que armazena MAXDATASIZE
     struct addrinfo hints, *serverinfo, *p;
+    struct sockaddr_storage server_addr;
+    socklen_t addr_len;
     int rv;
+    int numbytes;
     char s[INET6_ADDRSTRLEN];
 
     if (argc != 2)
@@ -58,21 +61,42 @@ int main(int argc, char *argv[])
             continue;
         }
 
-
         //transformando binário em IP para informar ao s
         inet_ntop(p->ai_family,
                   get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
 
         printf("client: tentando conectar em %s\n", s);
 
+        memcpy(&server_addr, p->ai_addr, p->ai_addrlen);
+        addr_len = p->ai_addrlen;
+
         break;
     }
 
-    printf("Conectado ao servidor!\n");//gg
-
-    close(sockfd); //fechando o socket
+    if (p == NULL) {
+        fprintf(stderr, "client: failed to create socket\n");
+        return 2;
+    }
 
     freeaddrinfo(serverinfo); //encerrando a lista criada por getaddrinfo()
+
+    if ((numbytes = sendto(sockfd, buffer, MAXDATASIZE, 0,
+                           (struct sockaddr *)&server_addr, addr_len)) == -1) {
+        perror("client: sendto");
+        exit(1);
+    }
+
+    if ((numbytes = recvfrom(sockfd, buffer, MAXDATASIZE - 1, 0,
+                             (struct sockaddr *)&server_addr, &addr_len)) == -1) {
+        perror("client: recvfrom");
+        exit(1);
+    }
+
+    buffer[numbytes] = '\0';
+
+    printf("Mensagem do servidor: %s\n", buffer);
+
+    close(sockfd); //fechando o socket
 
     return 0;
 }
