@@ -38,33 +38,38 @@ const char *inet_ntop2(void *addr, char *buf, size_t size)
 
 int get_listener_socket(void)
 {
-    int listener;     // Listening socket descriptor
-    int yes=1;        // For setsockopt() SO_REUSEADDR, below
+    int listener;//descritor do codigo
+    int yes=1;//valor q sera passado para setsockopt() para ativar SO_REUSEADDR()
     int rv;
 
     struct addrinfo hints, *ai, *p;
+  //lista de addeinfo e seus ponteiros
 
-    // Get us a socket and bind it
+    //estrutura do hints
     memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_UNSPEC; //IPv4 ou IPv6
+    hints.ai_socktype = SOCK_STREAM; //tcp
     hints.ai_flags = AI_PASSIVE;
     if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0) {
+      //checagem de erro em getaddrinfo()
         fprintf(stderr, "pollserver: %s\n", gai_strerror(rv));
         exit(1);
     }
 
+  //percorendo a lista de getaddrinfo()
     for(p = ai; p != NULL; p = p->ai_next) {
+      //criando socket
         listener = socket(p->ai_family, p->ai_socktype,
                 p->ai_protocol);
         if (listener < 0) {
             continue;
         }
 
-        // Lose the pesky "address already in use" error message
+        // reutilizando o socket
         setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes,
                 sizeof(int));
 
+      //bind()ando o socket
         if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
             close(listener);
             continue;
@@ -73,14 +78,14 @@ int get_listener_socket(void)
         break;
     }
 
-    // If we got here, it means we didn't get bound
+    // não conseguimos conexão, retorne errro
     if (p == NULL) {
         return -1;
     }
 
-    freeaddrinfo(ai); // All done with this
+    freeaddrinfo(ai); // liberando o addrinfo
 
-    // Listen
+    // Listen erro
     if (listen(listener, 10) == -1) {
         return -1;
     }
