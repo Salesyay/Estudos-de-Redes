@@ -12,25 +12,27 @@
 //funcao inetntop
 const char *inet_ntop2(void *addr, char *buf, size_t size)
 {
-    struct sockaddr_storage *sas = addr;
-    struct sockaddr_in *sa4;
-    struct sockaddr_in6 *sa6;
-    void *src;
+    struct sockaddr_storage *sas = addr;//sas aponta para 'sockaddr_sotrage' e addr aponta para 'void'
+    struct sockaddr_in *sa4; //sa4 aponta para o endereco de IPv4
+    struct sockaddr_in6 *sa6; //sa6 aponta para o endereco de IPv6
+    void *src; //aponta pra o endereco IP independente da versao de protocolo
 
     switch (sas->ss_family) {
-        case AF_INET:
-            sa4 = addr;
-            src = &(sa4->sin_addr);
+        case AF_INET: //caso IPv4
+            sa4 = addr; //addr recebe sa4 que eh um ponteiro para ipv4
+            src = &(sa4->sin_addr); //faca com que src aponte para o endereco IPv4 dentro da estrutura
+            // em C '&' representa 'endereco de', por isso usamos ele ali em cima
             break;
-        case AF_INET6:
-            sa6 = addr;
-            src = &(sa6->sin6_addr);
+        case AF_INET6: //caso IPv6
+            sa6 = addr;// addr recebe sa6 que eh um ponteiroi para IPv6
+            src = &(sa6->sin6_addr); //faz com que src aponte para o enderco de IPv6 dentro da estrutura
             break;
         default:
-            return NULL;
+            return NULL; //caso nao for nenhum dos dois renorne NULL
     }
 
-    return inet_ntop(sas->ss_family, src, buf, size);
+    return inet_ntop(sas->ss_family, src, buf, size); // se tudo occoreu certo, 
+    // a funcao inet_ntop() recebe: inet_ntop(family, endereço, buffer, tamanho);
 }
 
 
