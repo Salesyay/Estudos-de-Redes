@@ -92,6 +92,13 @@ int get_listener_socket(void)
 
     return listener;
 }
+//remoção de um elemento do array pfds
+void del_from_pfds (struct pollfd pfds[], int i, int *fd_count) {
+  pfds[i] = pfds[fd_count - 1];
+
+  (*fd_count)--;
+}
+
 
 int main(void)
 {
