@@ -93,6 +93,16 @@ int get_listener_socket(void)
 
     return listener;
 }
+
+void add_to_pfds(struct pollfd **pfds, int newfd, int *fd_count, int *fd_size) {
+  //checando se tem memoria suficiente
+  if(*fd_count == fd_size){
+    //se nao tiver, dobra e realoca com reqlloc()
+    fd_size *= 2;
+    *pfds = realloc(*pfds,sizeof(**pfds) * (fd_size));
+    
+  }
+}
 //remoção de um elemento do array pfds
 void del_from_pfds (struct pollfd pfds[], int i, int *fd_count) {
   pfds[i] = pfds[fd_count - 1];
