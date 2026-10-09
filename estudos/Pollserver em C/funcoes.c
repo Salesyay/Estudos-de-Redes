@@ -100,8 +100,15 @@ void add_to_pfds(struct pollfd **pfds, int newfd, int *fd_count, int *fd_size) {
     //se nao tiver, dobra e realoca com reqlloc()
     fd_size *= 2;
     *pfds = realloc(*pfds,sizeof(**pfds) * (fd_size));
-    
   }
+  //adiciona o descditor
+  (*pfds)[fd_count].fd = newfd;  
+  //monitora o evento
+  (*pfds)[fd_count].event = POLLIN;
+  //zera o evento retornado
+  (*pfds)[fd_count].revent = 0;
+
+  (*fd_count)++; //atualiza a quantidade de elementos 
 }
 //remoção de um elemento do array pfds
 void del_from_pfds (struct pollfd pfds[], int i, int *fd_count) {
