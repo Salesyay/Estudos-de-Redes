@@ -117,3 +117,65 @@ void del_from_pfds (struct pollfd pfds[], int i, int *fd_count) {
   (*fd_count)--;
 }
 
+void handle_client_data(int listener, int *fd_count,
+        struct pollfd *pfds, int *pfd_i)
+{
+    char buf[256];
+
+    int nbytes = recv(pfds[*pfd_i].fd, buf, sizeof buf, 0);
+
+    int sender_fd = pfds[*pfd_i].fd;
+
+    if (nbytes <= 0) {
+        if (nbytes == 0) {
+            
+            printf("pollserver: socket %d hung up\n", sender_fd);
+        } else {
+            perror("recv");
+        }
+
+        close(pfds[*pfd_i].fd); 
+
+        del_from_pfds(pfds, *pfd_i, fd_count);
+
+        
+        (*pfd_i)--;
+
+    } else { 
+        printf("pollserver: recv from fd %d: %.*s", sender_fd,
+                nbytes, buf);
+        
+        for(int j = 0; j < *fd_count; j++) {
+            int dest_fd = pfds[j].fd;
+
+            
+            if (dest_fd != listener && dest_fd != sender_fd) {
+                if (send(dest_fd, buf, nbytes, 0) == -1) {
+                    perror("send");
+                }
+            }
+        }
+    }
+}
+
+void process_connections(int listener, int *fd_count, int *fd_size,
+        struct pollfd **pfds)
+{
+    for(int i = 0; i < *fd_count; i++) {
+
+        
+        if ((*pfds)[i].revents & (POLLIN | POLLHUP)) {
+            /
+
+            if ((*pfds)[i].fd == listener) {
+                
+                handle_new_connection(listener, fd_count, fd_size,
+                        pfds);
+            } else {
+               
+                handle_client_data(listener, fd_count, *pfds, &i);
+            }
+        }
+    }
+}
+
