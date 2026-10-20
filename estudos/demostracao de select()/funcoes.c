@@ -200,46 +200,6 @@ void handle_new_connection(int listener, int *fd_count, int *fd_size,
 
     add_to_pfds(pfds, newfd, fd_count, fd_size);
 }
-
-
-void process_connections(int listener, int *fd_count, int *fd_size,
-        struct pollfd **pfds)
-{
-    //percorre os descritores registrados no array pfds
-    for (int i = 0; i < *fd_count; i++) {
-
-        //armazena os eventos identificados pelo poll()
-        short revents = (*pfds)[i].revents;
-
-        //verifica se ocorreu algum evento no socket
-        if (revents == 0) {
-            continue;
-        }   
-
-        //verifica se o socket apresentou erro ou descritor invalido
-        if (revents & (POLLERR | POLLNVAL)) {
-
-            //verifica se o descritor pertence a um cliente
-            if ((*pfds)[i].fd != listener) {
-                //fecha o socket do cliente
-                close((*pfds)[i].fd);
-
-                //remove o descritor do array pfds
-                del_from_pfds(*pfds, i, fd_count);
-
-                //volta uma posicao para verificar o elemento que foi movido
-                i--;
-            }
-
-            continue;
-        }
-
-        //verifica se o descritor recebeu dados ou se a conexao foi encerrada
-        if (revents & (POLLIN | POLLHUP)) {
-
-            //verifica se o descritor pertence ao socket de escuta do servidor
-            if ((*pfds)[i].fd == listener) {
-
                 //trata uma nova conexao recebida pelo servidor
                 handle_new_connection(listener, fd_count, fd_size,
                         pfds);
