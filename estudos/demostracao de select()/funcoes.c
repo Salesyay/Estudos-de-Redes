@@ -213,8 +213,8 @@ void handle_new_connection(int listener, int *fd_count, int *fd_size,
     }
 }
 
-void brodcast(char *buff, int nbytes, int listener, int s, fd_set, *master, int fdmax) {
-  for(int j == 0, j <= fdmax, j++) {
+void brodcast(char *buf, int nbytes, int listener, int s, fd_set, *master, int fdmax) {
+  for(int j = 0; j <= fdmax; j++) {
     if(FD_ISSET(j, master)) {
       if (j != listener && j != s) {
         if(send(j, buf, nbytes, 0) == -1) {
