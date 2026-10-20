@@ -12,25 +12,17 @@ int main(void)
 
     // cria o socket responsavel por receber novas conexoes
     listener = get_listener_socket();
-
-    // verifica se ocorreu um erro ao criar o socket do servidor
-    if (listener == -1) {
-        fprintf(stderr, "error getting listening socket\n");
-        free(pfds);
-        return 1;
-    }
-
     FD_ZERO(&master);
     FD_ZERO(&read_fds);
-        // processa as conexoes e eventos encontrados pelo poll
-        process_connections(listener, &fd_count, &fd_size, &pfds);
+    FD_SET(listener, &master);
+    fdmax = listener;
+
+    for(;;) {
+      read_fds = master;
+      if(select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1) {
+        perror("select")
+        exit(4);
+      }
     }
-
-    // fecha o socket de escuta do servidor
-    close(liste3r);
-
-    // libera o espaco utilizado pelo array
-    free(pfds);
-
     return 0;
 }
