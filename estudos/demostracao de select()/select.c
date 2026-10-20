@@ -24,5 +24,16 @@ int main(void)
         exit(4);
       }
     }
+    for(int i = 0; i<= fdmax; i++) {
+      if(FD_ISSET(i, &read_fds)) {
+        if (i == listener) 
+          handle_new_connection(i, &master, &fdmax);
+        else
+          handle_new_client (i, listener, &master, fdmax):
+
+          
+        }
+      }
+    }
     return 0;
 }
