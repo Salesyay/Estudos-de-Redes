@@ -108,60 +108,6 @@ int get_listener_socket(void)
     return listener;
 }
 
-
-//adicionando um novo descritor ao array pfds
-void add_to_pfds(struct pollfd **pfds, int newfd,
-        int *fd_count, int *fd_size)
-{
-    //checando se tem memoria suficiente
-    if (*fd_count >= *fd_size) {
-
-        //se nao tiver, dobra a capacidade do array
-        int new_size = (*fd_size > 0) ? (*fd_size * 2) : 5;
-
-        //realoca a memoria para armazenar mais descritores
-        struct pollfd *temp = realloc(*pfds,
-                sizeof(**pfds) * new_size);
-
-        //verifica se a realocacao falhou
-        if (temp == NULL) {
-            perror("realloc");
-            return;
-        }
-
-        //atualiza o ponteiro e a capacidade do array
-        *pfds = temp;
-        *fd_size = new_size;
-    }
-
-    //adiciona o descritor na proxima posicao disponivel
-    (*pfds)[*fd_count].fd = newfd;
-
-    //monitora os dados recebidos pelo socket
-    (*pfds)[*fd_count].events = POLLIN;
-
-    //zera os eventos retornados
-    (*pfds)[*fd_count].revents = 0;
-
-    (*fd_count)++; //atualiza a quantidade de elementos
-}
-
-
-//remocao de um elemento do array pfds
-void del_from_pfds(struct pollfd pfds[], int i, int *fd_count)
-{
-    //verifica se o indice eh valido
-    if (i < 0 || i >= *fd_count) {
-        return;
-    }
-
-    //substitui o elemento removido pelo ultimo elemento do array
-    pfds[i] = pfds[*fd_count - 1];
-
-    (*fd_count)--; //atualiza a quantidade de elementos
-}
-
-
 void handle_client_data(int listener, int *fd_count,
         struct pollfd *pfds, int *pfd_i)
 {
