@@ -6,19 +6,9 @@
 
 int main(void)
 {
-    int listener; // socket responsavel por receber novas conexoes
-
-    int fd_size = 5; // capacidade inicial do array de descritores
-    int fd_count = 0; // quantidade de descritores utilizados
-
-    // espaco para armazenar os descritores monitorados pelo poll
-    struct pollfd *pfds = malloc(sizeof *pfds * fd_size);
-
-    // verifica se a alocacao de memoria foi realizada corretamente
-    if (pfds == NULL) {
-        perror("malloc");
-        return 1;
-    }
+    fd_set master;
+    fd_set read_fds;
+    int fdmax;
 
     // cria o socket responsavel por receber novas conexoes
     listener = get_listener_socket();
@@ -30,30 +20,8 @@ int main(void)
         return 1;
     }
 
-    // adiciona o socket listener ao primeiro espaco do array
-    pfds[0].fd = listener;
-
-    // monitora o socket para verificar novas conexoes
-    pfds[0].events = POLLIN;
-    pfds[0].revents = 0;
-
-    // atualiza a quantidade de descritores utilizados
-    fd_count = 1;
-
-    puts("pollserver: waiting for connections...");
-
-    // mantem o servidor executando continuamente
-    for (;;) {
-
-        // espera algum dos sockets ficar pronto para comunicacao
-        int poll_count = poll(pfds, fd_count, -1);
-
-        // verifica se ocorreu um erro durante o monitoramento
-        if (poll_count == -1) {
-            perror("poll");
-            break;
-        }
-
+    FD_ZERO(&master);
+    FD_ZERO(&read_fds);
         // processa as conexoes e eventos encontrados pelo poll
         process_connections(listener, &fd_count, &fd_size, &pfds);
     }
