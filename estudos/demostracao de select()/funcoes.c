@@ -213,10 +213,16 @@ void handle_new_connection(int listener, int *fd_count, int *fd_size,
     }
 }
 
+//funcao que enviara uma mensagem pata varios clientes
 void brodcast(char *buf, int nbytes, int listener, int s, fd_set, *master, int fdmax) {
+  
+  //percorre o  maior numero de descritores presentes no conjunto de monitoramento
   for(int j = 0; j <= fdmax; j++) {
-    if(FD_ISSET(j, master)) {
+    //verificando se o descritor j esta marcado no conjunto 
+    if(FD_ISSET(j, &master)) {
+      //evitando enviar a mensagem para o cliente que a enviou
       if (j != listener && j != s) {
+        // envia a mensagem e verifica se ocorreu algum erro
         if(send(j, buf, nbytes, 0) == -1) {
           perror("send");
         }
