@@ -42,7 +42,6 @@ const char *inet_ntop2(void *addr, char *buf, size_t size)
     return inet_ntop(sas->ss_family, src, buf, size);
 }
 
-
 int get_listener_socket(void)
 {
     int listener; //descritor do socket do servidor
@@ -108,7 +107,6 @@ int get_listener_socket(void)
 
     return listener;
 }
-
 
 void handle_client_data(int listener, int *fd_count,
                         struct pollfd *pfds, int *pfd_i)
@@ -176,7 +174,6 @@ void handle_client_data(int listener, int *fd_count,
     }
 }
 
-
 void handle_new_connection(int listener, int *fd_count, int *fd_size,
                            struct pollfd **pfds)
 {
@@ -202,7 +199,6 @@ void handle_new_connection(int listener, int *fd_count, int *fd_size,
 
     add_to_pfds(pfds, newfd, fd_count, fd_size);
 }
-
 
 //funcao que enviara uma mensagem pata varios clientes
 void brodcast(char *buf, int nbytes, int listener, int s,
