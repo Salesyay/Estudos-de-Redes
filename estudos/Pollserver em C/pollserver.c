@@ -59,7 +59,7 @@ int main(void)
     }
 
     // fecha o socket de escuta do servidor
-    close(liste3r);
+    close(lister);
 
     // libera o espaco utilizado pelo array
     free(pfds);

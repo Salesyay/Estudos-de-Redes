@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/select.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -42,6 +41,7 @@ const char *inet_ntop2(void *addr, char *buf, size_t size)
     return inet_ntop(sas->ss_family, src, buf, size);
 }
 
+
 int get_listener_socket(void)
 {
     int listener; //descritor do socket do servidor
@@ -69,7 +69,7 @@ int get_listener_socket(void)
 
         //criando socket
         listener = socket(p->ai_family, p->ai_socktype,
-                          p->ai_protocol);
+                p->ai_protocol);
 
         if (listener < 0) {
             continue;
@@ -77,7 +77,7 @@ int get_listener_socket(void)
 
         //reutilizando o socket
         if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes,
-                       sizeof yes) < 0) {
+                sizeof yes) < 0) {
             close(listener);
             continue;
         }
@@ -109,7 +109,7 @@ int get_listener_socket(void)
 }
 
 void handle_client_data(int listener, int *fd_count,
-                        struct pollfd *pfds, int *pfd_i)
+        struct pollfd *pfds, int *pfd_i)
 {
     char buf[256]; //buffer que armazena os dados recebidos do cliente
 
@@ -141,7 +141,7 @@ void handle_client_data(int listener, int *fd_count,
 
         //mostra os dados recebidos do cliente
         printf("pollserver: recv from fd %d: %.*s",
-               sender_fd, nbytes, buf);
+                sender_fd, nbytes, buf);
 
         //percorre os descritores para enviar os dados aos outros clientes
         for (int j = 0; j < *fd_count; j++) {
@@ -158,7 +158,7 @@ void handle_client_data(int listener, int *fd_count,
                 //continua enviando enquanto houver dados pendentes
                 while (total_sent < nbytes) {
                     int sent = send(dest_fd, buf + total_sent,
-                                    nbytes - total_sent, MSG_NOSIGNAL);
+                            nbytes - total_sent, MSG_NOSIGNAL);
 
                     //verifica se ocorreu um erro durante o envio
                     if (sent <= 0) {
@@ -174,8 +174,9 @@ void handle_client_data(int listener, int *fd_count,
     }
 }
 
+
 void handle_new_connection(int listener, int *fd_count, int *fd_size,
-                           struct pollfd **pfds)
+        struct pollfd **pfds)
 {
     struct sockaddr_storage remoteaddr;
     socklen_t addrlen = sizeof remoteaddr;
@@ -195,29 +196,37 @@ void handle_new_connection(int listener, int *fd_count, int *fd_size,
     }
 
     printf("pollserver: new connection from %s on socket %d\n",
-           ip, newfd);
+            ip, newfd);
 
     add_to_pfds(pfds, newfd, fd_count, fd_size);
 }
+                //trata uma nova conexao recebida pelo servidor
+                handle_new_connection(listener, fd_count, fd_size,
+                        pfds);
 
-//funcao que enviara uma mensagem pata varios clientes
-void brodcast(char *buf, int nbytes, int listener, int s,
-              fd_set *master, int fdmax)
-{
-    //percorre o  maior numero de descritores presentes no conjunto de monitoramento
-    for (int j = 0; j <= fdmax; j++) {
+            } else {
 
-        //verificando se o descritor j esta marcado no conjunto
-        if (FD_ISSET(j, master)) {
-
-            //evitando enviar a mensagem para o cliente que a enviou
-            if (j != listener && j != s) {
-
-                // envia a mensagem e verifica se ocorreu algum erro
-                if (send(j, buf, nbytes, 0) == -1) {
-                    perror("send");
-                }
+                //trata os dados recebidos de um cliente conectado
+                handle_client_data(listener, fd_count, *pfds, &i);
             }
         }
     }
+}
+
+//funcao que enviara uma mensagem pata varios clientes
+void brodcast(char *buf, int nbytes, int listener, int s, fd_set, *master, int fdmax) {
+  
+  //percorre o  maior numero de descritores presentes no conjunto de monitoramento
+  for(int j = 0; j <= fdmax; j++) {
+    //verificando se o descritor j esta marcado no conjunto 
+    if(FD_ISSET(j, &master)) {
+      //evitando enviar a mensagem para o cliente que a enviou
+      if (j != listener && j != s) {
+        // envia a mensagem e verifica se ocorreu algum erro
+        if(send(j, buf, nbytes, 0) == -1) {
+          perror("send");
+        }
+      }
+    }
+  }
 }
